@@ -27,19 +27,22 @@ struct AssetDetailView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             HStack {
                 Text(formattedPrice)
                     .font(.largeTitle)
-                Spacer()
                 Text(priceDirectionText)
                     .font(.largeTitle)
                     .foregroundStyle(priceDirectionColor)
+                Spacer()
             }
-            .padding()
+            .padding(.bottom, 16)
+            
+            Text(assetPrice.id.detail)
             
             Spacer()
         }
+        .padding()
         .navigationTitle(assetPrice.id.rawValue)
     }
 }
