@@ -11,6 +11,8 @@ import Combine
 protocol AssetsListViewModelInterface: AnyObject {
     func pause()
     func resume()
+    
+    var assetsPrice: [AssetPrice] { get }
 }
 
 @Observable
@@ -24,6 +26,8 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
     // TODO: Handle force unwrapped optional
     private let webSocketUrl = URL(string: "wss://ws.postman-echo.com/raw")!
     
+    private(set) var assetsPrice: [AssetPrice] = []
+    
     init(webSocketClient: WebSocketClientInterface) {
         self.webSocketClient = webSocketClient
         
@@ -34,6 +38,20 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
                     self?.subscribeToAssets()
                 } else {
                     // TODO: Handle connect to websocket error
+                }
+            }
+            .store(in: &cancellables)
+        
+        webSocketClient.messageString
+            .map { messageText in
+                let data = Data(messageText.utf8)
+                let assetsPrice = try? JSONDecoder().decode([AssetPrice].self, from: data)
+                return assetsPrice
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] assetsPrice in
+                if let assetsPrice, !assetsPrice.isEmpty {
+                    self?.assetsPrice = assetsPrice
                 }
             }
             .store(in: &cancellables)
@@ -57,12 +75,15 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
                     let id = asset.rawValue
                     let price = Double.random(in: 10.0...10_000)
                     let query = """
-                        "\(id)": \(price)
+                        {
+                        "id": "\(id)",
+                        "price": \(price)
+                        }
                         """
                     queries.append(query)
                 }
                 
-                let queryString = "{\(queries.joined(separator: ", "))}"
+                let queryString = "[\(queries.joined(separator: ", "))]"
                 self?.webSocketClient.send(message: queryString)
             }
     }

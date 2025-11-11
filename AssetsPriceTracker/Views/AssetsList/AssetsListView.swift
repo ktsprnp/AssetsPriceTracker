@@ -15,10 +15,12 @@ struct AssetsListView: View {
     }
     
     var body: some View {
-        Text("Hello, World!")
-            .onAppear {
-                viewModel.resume()
-            }
+        List(viewModel.assetsPrice) { assetPrice in
+            AssetListItemView(assetPrice: assetPrice)
+        }
+        .onAppear {
+            viewModel.resume()
+        }
     }
 }
 
