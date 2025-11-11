@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct AssetDetailView: View {
+    @State var viewModel: AssetDetailViewModelInterface
+    
     var body: some View {
         Text("Hello, World!")
+            .navigationTitle(viewModel.title)
     }
 }
 
-#Preview {
-    AssetDetailView()
-}
+// TODO: Uncomment #preview
+//#Preview {
+//    AssetDetailView()
+//}

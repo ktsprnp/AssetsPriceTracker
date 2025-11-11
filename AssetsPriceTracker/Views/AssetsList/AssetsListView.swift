@@ -18,7 +18,7 @@ struct AssetsListView: View {
         NavigationStack {
             List(viewModel.assetsPrice) { assetPrice in
                 NavigationLink {
-                    AssetDetailView()
+                    AssetDetailView(viewModel: AssetDetailViewModel(assetPrice: assetPrice))
                 } label: {
                     AssetListItemView(assetPrice: assetPrice)
                 }
