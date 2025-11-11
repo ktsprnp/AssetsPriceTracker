@@ -7,23 +7,6 @@
 
 import Foundation
 
-enum PriceDirection: Codable {
-    case up
-    case down
-    case unchanged
-    
-    var text: String {
-        switch self {
-        case .up:
-            "↑"
-        case .down:
-            "↓"
-        case .unchanged:
-            "-"
-        }
-    }
-}
-
 struct AssetPrice: Codable, Identifiable {
     
     private enum CodingKeys: String, CodingKey {
