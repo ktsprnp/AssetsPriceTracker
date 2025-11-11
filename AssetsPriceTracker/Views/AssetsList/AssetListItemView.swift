@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AssetListItemView: View {
     
-    let assetPrice: AssetPrice
+    @Binding var assetPrice: AssetPrice
     
     private var formattedPrice: String {
         numberFormatter.string(from: NSNumber(floatLiteral: assetPrice.price)) ?? "N/A"
@@ -36,5 +36,5 @@ struct AssetListItemView: View {
 }
 
 #Preview {
-    AssetListItemView(assetPrice: AssetPrice(id: "BTC", price: 100_000.00))
+    AssetListItemView(assetPrice: .constant(AssetPrice(id: "BTC", price: 100_000.00, priceDirection: .unchanged)))
 }

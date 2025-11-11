@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct AssetPrice: Codable, Identifiable {
+@Observable
+final class AssetPrice: Codable, Identifiable {
     
     private enum CodingKeys: String, CodingKey {
         case id
@@ -18,4 +19,10 @@ struct AssetPrice: Codable, Identifiable {
     let price: Double
     
     var priceDirection: PriceDirection = .unchanged
+    
+    init(id: String, price: Double, priceDirection: PriceDirection) {
+        self.id = id
+        self.price = price
+        self.priceDirection = priceDirection
+    }
 }

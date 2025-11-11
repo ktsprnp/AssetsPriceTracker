@@ -16,9 +16,9 @@ struct AssetsListView: View {
     
     var body: some View {
         NavigationStack {
-            List(viewModel.assetsPrice) { assetPrice in
+            List($viewModel.assetsPrice) { assetPrice in
                 NavigationLink {
-                    AssetDetailView(viewModel: AssetDetailViewModel(assetPrice: assetPrice))
+                    AssetDetailView(assetPrice: assetPrice)
                 } label: {
                     AssetListItemView(assetPrice: assetPrice)
                 }

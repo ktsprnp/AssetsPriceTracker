@@ -8,23 +8,31 @@
 import SwiftUI
 
 struct AssetDetailView: View {
-    @State var viewModel: AssetDetailViewModelInterface
+    @Binding var assetPrice: AssetPrice
     
     private var priceDirectionColor: Color {
-        switch viewModel.priceDirection {
+        switch assetPrice.priceDirection {
         case .up: .green
         case .down: .red
         case .unchanged: .gray
         }
     }
     
+    private var formattedPrice: String {
+        numberFormatter.string(from: NSNumber(floatLiteral: assetPrice.price)) ?? "N/A"
+    }
+    
+    private var priceDirectionText: String {
+        assetPrice.priceDirection.text
+    }
+    
     var body: some View {
         VStack {
             HStack {
-                Text(viewModel.formattedPrice)
+                Text(formattedPrice)
                     .font(.largeTitle)
                 Spacer()
-                Text(viewModel.directionText)
+                Text(priceDirectionText)
                     .font(.largeTitle)
                     .foregroundStyle(priceDirectionColor)
             }
@@ -32,7 +40,7 @@ struct AssetDetailView: View {
             
             Spacer()
         }
-        .navigationTitle(viewModel.title)
+        .navigationTitle(assetPrice.id)
     }
 }
 

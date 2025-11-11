@@ -12,7 +12,7 @@ protocol AssetsListViewModelInterface: AnyObject {
     func stop()
     func start()
     
-    var assetsPrice: [AssetPrice] { get }
+    var assetsPrice: [AssetPrice] { get set }
     var isStarted: Bool { get }
 }
 
@@ -27,7 +27,7 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
     // TODO: Handle force unwrapped optional
     private let webSocketUrl = URL(string: "wss://ws.postman-echo.com/raw")!
     
-    private(set) var assetsPrice: [AssetPrice] = []
+    var assetsPrice: [AssetPrice] = []
     private(set) var isStarted = false
     private var previousPrices: [String: Double] = [:]
     
