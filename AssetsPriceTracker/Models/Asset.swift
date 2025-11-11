@@ -33,14 +33,4 @@ enum Asset: String, Codable, CaseIterable {
     case uniswap = "UNI"
     case ton = "TON"
     case aave = "AAVE"
-    
-    var query: String {
-        let template = """
-            {
-                "id": \(self.rawValue),
-                "price": \(Double.random(in: 0.0...10_000.0))
-            }
-            """
-        return template
-    }
 }

@@ -50,9 +50,19 @@ protocol AssetsListViewModelInterface: AnyObject {
         sendMessagesTimer = Timer.publish(every: sendMessagesIntervalInSeconds, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
+                var queries: [String] = []
+                
                 for asset in Asset.allCases {
-                    self?.webSocketClient.send(message: asset.query)
+                    let id = asset.rawValue
+                    let price = Double.random(in: 10.0...10_000)
+                    let query = """
+                        "\(id)": \(price)
+                        """
+                    queries.append(query)
                 }
+                
+                let queryString = "{\(queries.joined(separator: ", "))}"
+                self?.webSocketClient.send(message: queryString)
             }
     }
     
