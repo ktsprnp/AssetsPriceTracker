@@ -56,11 +56,7 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
     func send(message: String) {
         let message = URLSessionWebSocketTask.Message.string(message)
         
-        webSocketTask?.send(message) { error in
-            if let error {
-                // TODO: Handle websocket send message error
-            }
-        }
+        webSocketTask?.send(message) { _ in }
     }
     
     private func invalidatePingTimer() {
@@ -71,8 +67,7 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
     private func receive() {
         webSocketTask?.receive { [weak self] result in
             switch result {
-            case .failure(let error):
-                // TODO: Handle websocket received error
+            case .failure:
                 break
             case .success(let message):
                 switch message {
@@ -95,11 +90,7 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
         pingTimer = Timer.publish(every: pingIntervalInSeconds, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                self?.webSocketTask?.sendPing { error in
-                    if let error {
-                        // TODO: Handle ping error
-                    }
-                }
+                self?.webSocketTask?.sendPing { _ in }
             }
     }
 }

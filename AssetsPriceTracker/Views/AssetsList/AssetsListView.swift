@@ -47,7 +47,23 @@ struct AssetsListView: View {
     }
 }
 
-// TODO: Uncomment #preview
-//#Preview {
-//    AssetsListView()
-//}
+#if DEBUG
+
+private final class MockAssetListViewModel: AssetsListViewModelInterface {
+    var assetsPrice: [AssetPrice] = []
+    var isStarted: Bool = false
+    
+    func start() {
+        isStarted = true
+    }
+    
+    func stop() {
+        isStarted = false
+    }
+}
+
+#Preview {
+    AssetsListView(viewModel: MockAssetListViewModel())
+}
+
+#endif

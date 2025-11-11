@@ -24,7 +24,6 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
     private var cancellables: Set<AnyCancellable> = []
     private var sendMessagesTimer: AnyCancellable?
     
-    // TODO: Handle force unwrapped optional
     private let webSocketUrl = URL(string: "wss://ws.postman-echo.com/raw")!
     
     var assetsPrice: [AssetPrice] = []

@@ -47,7 +47,6 @@ struct AssetDetailView: View {
     }
 }
 
-// TODO: Uncomment #preview
-//#Preview {
-//    AssetDetailView()
-//}
+#Preview {
+    AssetDetailView(assetPrice: .constant(.init(id: .bitcoin, price: 100_000, priceDirection: .unchanged)))
+}
