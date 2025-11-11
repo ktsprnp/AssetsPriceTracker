@@ -15,18 +15,24 @@ protocol WebSocketClientInterface: AnyObject {
     
     var messagesString: [String] { get }
     var messagesData: [Data] { get }
+    var isConnected: Bool { get }
 }
 
 final class WebSocketClient: NSObject, WebSocketClientInterface {
     
     private var webSocketTask: URLSessionWebSocketTask?
     private var urlSession: URLSession?
-    private var pingTimer: Timer?
+    private var pingTimer: AnyCancellable?
     
     static let shared = WebSocketClient()
     
     @Published private(set) var messagesString: [String] = []
     @Published private(set) var messagesData: [Data] = []
+    @Published private(set) var isConnected = false
+    
+    deinit {
+        invalidatePingTimer()
+    }
 
     func connect(url: URL) {
         guard webSocketTask == nil else { return }
@@ -39,12 +45,12 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
     func disconnect() {
         guard webSocketTask != nil else { return }
         
-        pingTimer?.invalidate()
-        pingTimer = nil
+        invalidatePingTimer()
         
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         webSocketTask = nil
         urlSession = nil
+        isConnected = false
     }
 
     func send(message: String) {
@@ -55,6 +61,11 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
                 // TODO: Handle websocket send message error
             }
         }
+    }
+    
+    private func invalidatePingTimer() {
+        pingTimer?.cancel()
+        pingTimer = nil
     }
 
     private func receive() {
@@ -81,13 +92,15 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
     private func ping() {
         let pingIntervalInSeconds: TimeInterval = 10
         
-        pingTimer = Timer.scheduledTimer(withTimeInterval: pingIntervalInSeconds, repeats: true) { [weak self] _ in
-            self?.webSocketTask?.sendPing { error in
-                if let error {
-                    // TODO: Handle ping error
+        pingTimer = Timer.publish(every: pingIntervalInSeconds, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.webSocketTask?.sendPing { error in
+                    if let error {
+                        // TODO: Handle ping error
+                    }
                 }
             }
-        }
     }
 }
 
@@ -96,11 +109,12 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
 extension WebSocketClient: URLSessionWebSocketDelegate {
     
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        isConnected = true
         ping()
         receive()
     }
 
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        // TODO: Handle web socket connection closed
+        isConnected = false
     }
 }

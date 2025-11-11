@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Asset: String, Codable {
+enum Asset: String, Codable, CaseIterable {
     case apple = "AAPL"
     case google = "GOOG"
     case tesla = "TSLA"
@@ -33,4 +33,14 @@ enum Asset: String, Codable {
     case uniswap = "UNI"
     case ton = "TON"
     case aave = "AAVE"
+    
+    var query: String {
+        let template = """
+            {
+                "id": \(self.rawValue),
+                "price": \(Double.random(in: 0.0...10_000.0))
+            }
+            """
+        return template
+    }
 }
