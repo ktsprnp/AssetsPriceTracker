@@ -11,15 +11,6 @@ struct AssetListItemView: View {
     
     let assetPrice: AssetPrice
     
-    private let numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        return formatter
-    }()
-    
     private var formattedPrice: String {
         numberFormatter.string(from: NSNumber(floatLiteral: assetPrice.price)) ?? "N/A"
     }
