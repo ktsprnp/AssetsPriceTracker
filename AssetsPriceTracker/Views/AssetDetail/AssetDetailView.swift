@@ -40,7 +40,7 @@ struct AssetDetailView: View {
             
             Spacer()
         }
-        .navigationTitle(assetPrice.id)
+        .navigationTitle(assetPrice.id.rawValue)
     }
 }
 

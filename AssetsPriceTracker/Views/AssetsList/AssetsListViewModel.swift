@@ -29,7 +29,7 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
     
     var assetsPrice: [AssetPrice] = []
     private(set) var isStarted = false
-    private var previousPrices: [String: Double] = [:]
+    private var previousPrices: [Asset: Double] = [:]
     
     init(webSocketClient: WebSocketClientInterface) {
         self.webSocketClient = webSocketClient

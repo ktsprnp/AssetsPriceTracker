@@ -33,4 +33,8 @@ enum Asset: String, Codable, CaseIterable {
     case uniswap = "UNI"
     case ton = "TON"
     case aave = "AAVE"
+    
+    var detail: String {
+        "This is a short description for \(rawValue) asset."
+    }
 }

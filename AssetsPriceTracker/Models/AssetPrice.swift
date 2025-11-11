@@ -15,12 +15,12 @@ final class AssetPrice: Codable, Identifiable {
         case price
     }
     
-    let id: String
+    let id: Asset
     let price: Double
     
     var priceDirection: PriceDirection = .unchanged
     
-    init(id: String, price: Double, priceDirection: PriceDirection) {
+    init(id: Asset, price: Double, priceDirection: PriceDirection) {
         self.id = id
         self.price = price
         self.priceDirection = priceDirection

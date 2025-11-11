@@ -28,7 +28,7 @@ struct AssetListItemView: View {
             Text(assetPrice.priceDirection.text)
                 .foregroundStyle(priceDirectionColor)
             
-            Text(assetPrice.id)
+            Text(assetPrice.id.rawValue)
             Spacer()
             Text(formattedPrice)
         }
@@ -36,5 +36,5 @@ struct AssetListItemView: View {
 }
 
 #Preview {
-    AssetListItemView(assetPrice: .constant(AssetPrice(id: "BTC", price: 100_000.00, priceDirection: .unchanged)))
+    AssetListItemView(assetPrice: .constant(AssetPrice(id: .bitcoin, price: 100_000.00, priceDirection: .unchanged)))
 }
