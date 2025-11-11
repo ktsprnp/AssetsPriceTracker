@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct AssetsListView: View {
+    @State private var viewModel: AssetsListViewModelInterface
+    
+    init(viewModel: AssetsListViewModelInterface) {
+        self.viewModel = viewModel
+    }
+    
     var body: some View {
         Text("Hello, World!")
+            .onAppear {
+                viewModel.resume()
+            }
     }
 }
 
-#Preview {
-    AssetsListView()
-}
+// TODO: Uncomment #preview
+//#Preview {
+//    AssetsListView()
+//}
