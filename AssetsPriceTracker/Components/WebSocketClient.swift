@@ -9,9 +9,12 @@ import Foundation
 import Combine
 
 protocol WebSocketClientInterface: AnyObject {
-    func connect()
+    func connect(url: URL)
     func disconnect()
     func send(message: String)
+    
+    var messagesString: [String] { get }
+    var messagesData: [Data] { get }
 }
 
 final class WebSocketClient: NSObject, WebSocketClientInterface {
@@ -22,14 +25,14 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
     
     static let shared = WebSocketClient()
     
-    // TODO: Handle force unwrapped optional
-    private let webSocketUrl = URL(string: "wss://ws.postman-echo.com/raw")!
+    @Published private(set) var messagesString: [String] = []
+    @Published private(set) var messagesData: [Data] = []
 
-    func connect() {
+    func connect(url: URL) {
         guard webSocketTask == nil else { return }
         
         urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue())
-        webSocketTask = urlSession?.webSocketTask(with: webSocketUrl)
+        webSocketTask = urlSession?.webSocketTask(with: url)
         webSocketTask?.resume()
     }
 
@@ -63,11 +66,9 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
             case .success(let message):
                 switch message {
                 case .string(let text):
-                    // TODO: Handle received success text message
-                    break
+                    self?.messagesString.append(text)
                 case .data(let data):
-                    // TODO: Handle received success data message
-                    break
+                    self?.messagesData.append(data)
                 @unknown default:
                     break
                 }
