@@ -48,7 +48,10 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
         webSocketClient.messageString
             .map { messageText in
                 let data = Data(messageText.utf8)
-                let assetsPrice = try? JSONDecoder().decode([AssetPrice].self, from: data)
+                var assetsPrice = try? JSONDecoder().decode([AssetPrice].self, from: data)
+                assetsPrice?.sort { item1, item2 in
+                    item1.price > item2.price
+                }
                 return assetsPrice
             }
             .receive(on: DispatchQueue.main)
