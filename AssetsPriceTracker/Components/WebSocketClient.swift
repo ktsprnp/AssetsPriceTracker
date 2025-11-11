@@ -9,20 +9,23 @@ import Foundation
 import Combine
 
 protocol WebSocketClientInterface: AnyObject {
-    
+    func connect()
+    func disconnect()
+    func send(message: String)
 }
 
 final class WebSocketClient: NSObject, WebSocketClientInterface {
     
     private var webSocketTask: URLSessionWebSocketTask?
     private var urlSession: URLSession?
+    private var pingTimer: Timer?
     
     static let shared = WebSocketClient()
     
     // TODO: Handle force unwrapped optional
     private let webSocketUrl = URL(string: "wss://ws.postman-echo.com/raw")!
 
-    func connect(url: URL) {
+    func connect() {
         guard webSocketTask == nil else { return }
         
         urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue())
@@ -32,6 +35,9 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
 
     func disconnect() {
         guard webSocketTask != nil else { return }
+        
+        pingTimer?.invalidate()
+        pingTimer = nil
         
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         webSocketTask = nil
@@ -48,7 +54,7 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
         }
     }
 
-    func receive() {
+    private func receive() {
         webSocketTask?.receive { [weak self] result in
             switch result {
             case .failure(let error):
@@ -70,6 +76,18 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
             self?.receive()
         }
     }
+    
+    private func ping() {
+        let pingIntervalInSeconds: TimeInterval = 10
+        
+        pingTimer = Timer.scheduledTimer(withTimeInterval: pingIntervalInSeconds, repeats: true) { [weak self] _ in
+            self?.webSocketTask?.sendPing { error in
+                if let error {
+                    // TODO: Handle ping error
+                }
+            }
+        }
+    }
 }
 
 // MARK: - URLSessionWebSocketDelegate
@@ -77,6 +95,7 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
 extension WebSocketClient: URLSessionWebSocketDelegate {
     
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        ping()
         receive()
     }
 
