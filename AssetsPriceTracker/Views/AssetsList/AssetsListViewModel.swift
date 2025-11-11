@@ -13,9 +13,10 @@ protocol AssetsListViewModelInterface: AnyObject {
     func resume()
 }
 
-@Observable final class AssetsListViewModel: AssetsListViewModelInterface {
+@Observable
+final class AssetsListViewModel: AssetsListViewModelInterface {
     
-    private let webSocketClient: WebSocketClient
+    private let webSocketClient: WebSocketClientInterface
     
     private var cancellables: Set<AnyCancellable> = []
     private var sendMessagesTimer: AnyCancellable?
@@ -23,10 +24,10 @@ protocol AssetsListViewModelInterface: AnyObject {
     // TODO: Handle force unwrapped optional
     private let webSocketUrl = URL(string: "wss://ws.postman-echo.com/raw")!
     
-    init(webSocketClient: WebSocketClient) {
+    init(webSocketClient: WebSocketClientInterface) {
         self.webSocketClient = webSocketClient
         
-        webSocketClient.$isConnected
+        webSocketClient.isConnected
             .removeDuplicates()
             .sink { [weak self] isConnected in
                 if isConnected {

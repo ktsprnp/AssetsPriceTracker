@@ -13,9 +13,9 @@ protocol WebSocketClientInterface: AnyObject {
     func disconnect()
     func send(message: String)
     
-    var messagesString: [String] { get }
-    var messagesData: [Data] { get }
-    var isConnected: Bool { get }
+    var messageString: PassthroughSubject<String, Never> { get }
+    var messageData: PassthroughSubject<Data, Never> { get }
+    var isConnected: PassthroughSubject<Bool, Never> { get }
 }
 
 final class WebSocketClient: NSObject, WebSocketClientInterface {
@@ -26,9 +26,9 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
     
     static let shared = WebSocketClient()
     
-    @Published private(set) var messagesString: [String] = []
-    @Published private(set) var messagesData: [Data] = []
-    @Published private(set) var isConnected = false
+    let messageData = PassthroughSubject<Data, Never>()
+    let messageString = PassthroughSubject<String, Never>()
+    let isConnected = PassthroughSubject<Bool, Never>()
     
     deinit {
         invalidatePingTimer()
@@ -50,7 +50,7 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         webSocketTask = nil
         urlSession = nil
-        isConnected = false
+        isConnected.send(false)
     }
 
     func send(message: String) {
@@ -77,9 +77,9 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
             case .success(let message):
                 switch message {
                 case .string(let text):
-                    self?.messagesString.append(text)
+                    self?.messageString.send(text)
                 case .data(let data):
-                    self?.messagesData.append(data)
+                    self?.messageData.send(data)
                 @unknown default:
                     break
                 }
@@ -109,12 +109,12 @@ final class WebSocketClient: NSObject, WebSocketClientInterface {
 extension WebSocketClient: URLSessionWebSocketDelegate {
     
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        isConnected = true
+        isConnected.send(true)
         ping()
         receive()
     }
 
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        isConnected = false
+        isConnected.send(false)
     }
 }
