@@ -9,10 +9,11 @@ import Foundation
 import Combine
 
 protocol AssetsListViewModelInterface: AnyObject {
-    func pause()
-    func resume()
+    func stop()
+    func start()
     
     var assetsPrice: [AssetPrice] { get }
+    var isStarted: Bool { get }
 }
 
 @Observable
@@ -27,6 +28,7 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
     private let webSocketUrl = URL(string: "wss://ws.postman-echo.com/raw")!
     
     private(set) var assetsPrice: [AssetPrice] = []
+    private(set) var isStarted = false
     
     init(webSocketClient: WebSocketClientInterface) {
         self.webSocketClient = webSocketClient
@@ -36,8 +38,9 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
             .sink { [weak self] isConnected in
                 if isConnected {
                     self?.subscribeToAssets()
+                    self?.isStarted = true
                 } else {
-                    // TODO: Handle connect to websocket error
+                    self?.isStarted = false
                 }
             }
             .store(in: &cancellables)
@@ -88,11 +91,11 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
             }
     }
     
-    func pause() {
+    func stop() {
         webSocketClient.disconnect()
     }
     
-    func resume() {
+    func start() {
         webSocketClient.connect(url: webSocketUrl)
     }
 }

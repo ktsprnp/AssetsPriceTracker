@@ -24,8 +24,24 @@ struct AssetsListView: View {
                 }
             }
             .navigationTitle("Assets Price")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Text(viewModel.isStarted ? "🟢" : "🔴")
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        if viewModel.isStarted {
+                            viewModel.stop()
+                        } else {
+                            viewModel.start()
+                        }
+                    } label: {
+                        Text(viewModel.isStarted ? "Stop" : "Start")
+                    }
+                }
+            }
             .onAppear {
-                viewModel.resume()
+                viewModel.start()
             }
         }
     }
