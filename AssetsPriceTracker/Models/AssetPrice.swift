@@ -10,7 +10,7 @@ import Foundation
 enum PriceDirection: Codable {
     case up
     case down
-    case unknown
+    case unchanged
     
     var text: String {
         switch self {
@@ -18,7 +18,7 @@ enum PriceDirection: Codable {
             "↑"
         case .down:
             "↓"
-        case .unknown:
+        case .unchanged:
             "-"
         }
     }
@@ -34,5 +34,5 @@ struct AssetPrice: Codable, Identifiable {
     let id: String
     let price: Double
     
-    var priceDirection: PriceDirection = .unknown
+    var priceDirection: PriceDirection = .unchanged
 }

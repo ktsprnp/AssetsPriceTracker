@@ -30,7 +30,7 @@ struct AssetListItemView: View {
             Color.green
         case .down:
             Color.red
-        case .unknown:
+        case .unchanged:
             Color.gray
         }
     }
