@@ -9,6 +9,9 @@ import Foundation
 
 protocol AssetDetailViewModelInterface: AnyObject {
     var title: String { get }
+    var formattedPrice: String { get }
+    var directionText: String { get }
+    var priceDirection: PriceDirection { get }
 }
 
 @Observable
@@ -18,6 +21,18 @@ final class AssetDetailViewModel: AssetDetailViewModelInterface {
     
     var title: String {
         assetPrice.id
+    }
+    
+    var formattedPrice: String {
+        numberFormatter.string(from: NSNumber(floatLiteral: assetPrice.price)) ?? "N/A"
+    }
+    
+    var directionText: String {
+        assetPrice.priceDirection.text
+    }
+    
+    var priceDirection: PriceDirection {
+        assetPrice.priceDirection
     }
     
     init(assetPrice: AssetPrice) {

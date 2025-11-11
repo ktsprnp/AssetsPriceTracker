@@ -17,12 +17,9 @@ struct AssetListItemView: View {
     
     private var priceDirectionColor: Color {
         switch assetPrice.priceDirection {
-        case .up:
-            Color.green
-        case .down:
-            Color.red
-        case .unchanged:
-            Color.gray
+        case .up: .green
+        case .down: .red
+        case .unchanged: .gray
         }
     }
     
