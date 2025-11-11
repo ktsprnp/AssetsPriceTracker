@@ -15,7 +15,7 @@ struct AssetsListView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List(viewModel.assetsPrice) { assetPrice in
                 NavigationLink {
                     AssetDetailView()
