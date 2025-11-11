@@ -15,11 +15,18 @@ struct AssetsListView: View {
     }
     
     var body: some View {
-        List(viewModel.assetsPrice) { assetPrice in
-            AssetListItemView(assetPrice: assetPrice)
-        }
-        .onAppear {
-            viewModel.resume()
+        NavigationView {
+            List(viewModel.assetsPrice) { assetPrice in
+                NavigationLink {
+                    AssetDetailView()
+                } label: {
+                    AssetListItemView(assetPrice: assetPrice)
+                }
+            }
+            .navigationTitle("Assets Price")
+            .onAppear {
+                viewModel.resume()
+            }
         }
     }
 }
