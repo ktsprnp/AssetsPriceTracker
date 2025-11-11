@@ -29,6 +29,7 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
     
     private(set) var assetsPrice: [AssetPrice] = []
     private(set) var isStarted = false
+    private var previousPrices: [String: Double] = [:]
     
     init(webSocketClient: WebSocketClientInterface) {
         self.webSocketClient = webSocketClient
@@ -46,13 +47,8 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
             .store(in: &cancellables)
         
         webSocketClient.messageString
-            .map { messageText in
-                let data = Data(messageText.utf8)
-                var assetsPrice = try? JSONDecoder().decode([AssetPrice].self, from: data)
-                assetsPrice?.sort { item1, item2 in
-                    item1.price > item2.price
-                }
-                return assetsPrice
+            .map { [weak self] messageText in
+                return self?.processMessageText(messageText)
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] assetsPrice in
@@ -61,6 +57,31 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func processMessageText(_ messageText: String) -> [AssetPrice]? {
+        let data = Data(messageText.utf8)
+        var assetsPrice = try? JSONDecoder().decode([AssetPrice].self, from: data)
+        assetsPrice?.sort { item1, item2 in
+            item1.price > item2.price
+        }
+        
+        for (index, asset) in (assetsPrice ?? []).enumerated() {
+            let assetId = asset.id
+            let currentPrice = asset.price
+            
+            if let previousPrice = previousPrices[assetId] {
+                if currentPrice > previousPrice {
+                    assetsPrice?[index].priceDirection = .up
+                } else if currentPrice < previousPrice {
+                    assetsPrice?[index].priceDirection = .down
+                }
+            }
+            
+            previousPrices[assetId] = currentPrice
+        }
+        
+        return assetsPrice
     }
     
     deinit {

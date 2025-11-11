@@ -24,8 +24,22 @@ struct AssetListItemView: View {
         numberFormatter.string(from: NSNumber(floatLiteral: assetPrice.price)) ?? "N/A"
     }
     
+    private var priceDirectionColor: Color {
+        switch assetPrice.priceDirection {
+        case .up:
+            Color.green
+        case .down:
+            Color.red
+        case .unknown:
+            Color.gray
+        }
+    }
+    
     var body: some View {
         HStack {
+            Text(assetPrice.priceDirection.text)
+                .foregroundStyle(priceDirectionColor)
+            
             Text(assetPrice.id)
             Spacer()
             Text(formattedPrice)
