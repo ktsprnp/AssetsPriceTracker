@@ -1,5 +1,3 @@
-## Screenshots
-
 ## Core Features
 - [x] Live price tracking for 25 symbols.
 - [x] WebSocket echo integration
