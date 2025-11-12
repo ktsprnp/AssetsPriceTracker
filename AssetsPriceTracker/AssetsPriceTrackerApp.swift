@@ -10,11 +10,14 @@ import SwiftUI
 @main
 struct AssetsPriceTrackerApp: App {
     
-    private let webSocketClient = WebSocketClient.shared
+    @State private var assetsListViewModel: AssetsListViewModelInterface = AssetsListViewModel(webSocketClient: WebSocketClient.shared)
     
     var body: some Scene {
         WindowGroup {
-            AssetsListView(viewModel: AssetsListViewModel(webSocketClient: webSocketClient))
+            AssetsListView(viewModel: $assetsListViewModel)
+                .onAppear {
+                    assetsListViewModel.start()
+                }
         }
     }
 }

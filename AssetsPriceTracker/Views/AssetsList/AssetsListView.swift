@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct AssetsListView: View {
-    @State private var viewModel: AssetsListViewModelInterface
-    
-    init(viewModel: AssetsListViewModelInterface) {
-        self.viewModel = viewModel
-    }
+    @Binding var viewModel: AssetsListViewModelInterface
     
     var body: some View {
         NavigationStack {
@@ -40,9 +36,6 @@ struct AssetsListView: View {
                     }
                 }
             }
-            .onAppear {
-                viewModel.start()
-            }
         }
     }
 }
@@ -63,7 +56,7 @@ private final class MockAssetListViewModel: AssetsListViewModelInterface {
 }
 
 #Preview {
-    AssetsListView(viewModel: MockAssetListViewModel())
+    AssetsListView(viewModel: .constant(MockAssetListViewModel()))
 }
 
 #endif
