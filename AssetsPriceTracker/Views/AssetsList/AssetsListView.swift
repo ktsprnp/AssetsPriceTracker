@@ -9,8 +9,6 @@ import SwiftUI
 
 struct AssetsListView: View {
     @State private var viewModel: AssetsListViewModelInterface
-    @State private var flashColor = Color.clear
-    @State private var isFlashing = false
     
     init(viewModel: AssetsListViewModelInterface) {
         self.viewModel = viewModel
@@ -22,20 +20,7 @@ struct AssetsListView: View {
                 NavigationLink {
                     AssetDetailView(assetPrice: assetPrice)
                 } label: {
-                    ZStack {
-//                        flashColor
-//                            .animation(.easeInOut(duration: 0.5), value: flashColor)
-//                            .onAppear {
-//                                let color: Color = switch assetPrice.wrappedValue.priceDirection {
-//                                case .up: .green
-//                                case .down: .red
-//                                case .unchanged: .clear
-//                                }
-//                                flashBackground(color: color)
-//                            }
-                        
-                        AssetListItemView(assetPrice: assetPrice)
-                    }
+                    AssetListItemView(assetPrice: assetPrice)
                 }
             }
             .navigationTitle("Assets Price")
@@ -58,21 +43,6 @@ struct AssetsListView: View {
             .onAppear {
                 viewModel.start()
             }
-        }
-    }
-    
-    private func flashBackground(color: Color) {
-        guard !isFlashing, color != .clear else { return }
-        isFlashing = true
-
-        flashColor = color
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            flashColor = .clear
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            isFlashing = false
         }
     }
 }
