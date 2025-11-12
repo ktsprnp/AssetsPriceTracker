@@ -10,9 +10,9 @@
 - [x] Symbol details screen
 
 ## Bonus Features
-- [ ] Price flashes 1 second.
 - [x] Example of unit tests for `WebSocketClient`.
 - [x] Ligth and dark themes
+- [ ] Price flashes 1 second.
 - [ ] Deep link
 
 ## Technical details
