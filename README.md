@@ -16,6 +16,7 @@
 - [ ] Deep link
 
 ## Technical details
+- [x] External dependencies free.
 - [x] 100% SwiftUI UI
 - [x] Architecture: MVVM
 - [x] Use NavigationStack
