@@ -17,7 +17,7 @@
 
 ## Technical details
 - [x] External dependencies free.
-- [x] 100% SwiftUI UI
+- [x] 100% SwiftUI
 - [x] Architecture: MVVM
 - [x] Use NavigationStack
 - [x] Use Combine to handle WebSocket data streams.
