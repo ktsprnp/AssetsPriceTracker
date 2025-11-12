@@ -11,7 +11,7 @@
 
 ## Bonus Features
 - [ ] Price flashes 1 second.
-- [ ] Unit tests
+- [x] Example of unit tests for `WebSocketClient`.
 - [x] Ligth and dark themes
 - [ ] Deep link
 
