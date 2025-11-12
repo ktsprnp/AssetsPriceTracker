@@ -35,6 +35,7 @@ final class AssetsListViewModel: AssetsListViewModelInterface {
         
         webSocketClient.isConnected
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] isConnected in
                 if isConnected {
                     self?.subscribeToAssets()
